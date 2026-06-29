@@ -23,13 +23,6 @@ pipeline:
             override: true
           buildIntelligence:
             enabled: true
-          infrastructure:
-            type: VM
-            spec:
-              type: Pool
-              spec:
-                poolName: yaswamnth
-                os: Linux
           execution:
             steps:
               - step:
@@ -43,3 +36,10 @@ pipeline:
                       java -jar target/hello-world-1.0.0.jar
                       echo "" 
                       echo "=== Pipeline Success! ==="
+          platform:
+            os: Linux
+            arch: Arm64
+          runtime:
+            type: Docker
+            spec:
+              harnessImageConnectorRef: account.harnessImage
