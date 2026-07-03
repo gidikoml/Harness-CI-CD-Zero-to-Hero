@@ -53,13 +53,15 @@ pipeline:
         type: CI
         spec:
           cloneCodebase: true
+          platform:
+            os: Linux
+            arch: Amd64
           runtime:
-            # This uses Local Docker Runner (needs Delegate with tag "local-docker-delegate")
-            # Delegate name: linux-amd64
+            # This uses Local Docker Runner
+            # Needs Delegate with tag "linux-amd64" installed on your machine
+            # Install: Project Settings > Delegates > + New Delegate > Docker > Tag: local-docker-delegate
             type: Docker
-            spec:
-              delegateSelectors:
-                - local-docker-delegate
+            spec: {}
           execution:
             steps:
               # ─────────────────────────────────────────────
