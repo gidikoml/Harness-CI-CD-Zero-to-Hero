@@ -23,7 +23,7 @@ pipeline:
   # CHANGE THIS: Your project ID
   projectIdentifier: HarnessCICDZerotoHero
   # CHANGE THIS: Your org name
-  orgIdentifier: Harness
+  orgIdentifier: default
   tags: {}
   properties:
     ci:
