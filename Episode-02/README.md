@@ -374,7 +374,28 @@ Connectors = How Harness connects to external tools
    - Value: (your Docker Hub username)
 4. Click **Save**
 
-### Step 5: Explore RBAC
+### Step 5: Create Docker Hub Connector
+
+**Connector tells Harness HOW to connect.**
+
+1. Go to **Account Settings** (bottom left) → **Connectors**
+2. Click **+ New Connector**
+3. Under "Artifact Repositories" → Click **Docker Registry**
+4. Fill in:
+   - Name: `dockerhub`
+   - Provider Type: **Docker Hub**
+   - URL: `https://index.docker.io/v2/`
+5. Click **Continue**
+6. Authentication:
+   - Username: your Docker Hub username (e.g. `yaswanth111`)
+   - Password: click **Select** → choose your existing secret `docker-hub-password`
+7. Click **Continue**
+8. Connectivity: **Connect through Harness Platform**
+9. Click **Save and Continue**
+10. Test Connection → ✅ Success
+11. Click **Finish**
+
+### Step 6: Explore RBAC
 
 1. Go to **Project Settings** → **Access Control**
 2. See the default roles
