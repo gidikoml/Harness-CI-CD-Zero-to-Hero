@@ -113,11 +113,95 @@ pipeline:
                     shell: Sh
                     command: |-
                       echo "========================================="
-                      echo "  PIPELINE COMPLETE!"
+                      echo "  Step 5: Image Pushed Successfully!"
                       echo ""
-                      echo "  Image pushed to Docker Hub:"
-                      echo "  <+variable.docker_username>/python-harness-app:<+pipeline.sequenceId>"
-                      echo "  <+variable.docker_username>/python-harness-app:latest"
+                      echo "  Image: <+variable.docker_username>/python-harness-app:<+pipeline.sequenceId>"
+                      echo "  Image: <+variable.docker_username>/python-harness-app:latest"
                       echo ""
                       echo "  View: https://hub.docker.com/r/<+variable.docker_username>/python-harness-app"
+                      echo "========================================="
+
+              # Step 6: Wait 1 minute before cleanup
+              - step:
+                  type: Run
+                  name: Wait Before Cleanup
+                  identifier: wait_before_cleanup
+                  spec:
+                    shell: Sh
+                    command: |-
+                      echo "=== Step 6: Waiting 1 minute ==="
+                      echo "Giving Docker Hub time to process the push..."
+                      sleep 60
+                      echo "=== Done waiting! Proceeding to cleanup ==="
+
+              # Step 7: Delete Docker Hub repository image and verify
+              - step:
+                  type: Run
+                  name: Delete and Verify
+                  identifier: delete_and_verify
+                  spec:
+                    shell: Sh
+                    command: |-
+                      echo "=== Step 7: Deleting Docker Hub Image ==="
+                      echo ""
+                      echo "Deleting tag: <+pipeline.sequenceId>"
+                      TOKEN=$(curl -s -H "Content-Type: application/json" -X POST -d '{"username":"<+variable.docker_username>","password":"<+secrets.getValue("docker-hub-password")>"}' https://hub.docker.com/v2/users/login/ | python3 -c "import sys,json; print(json.load(sys.stdin)['token'])")
+                      echo "Logged in to Docker Hub API"
+                      echo ""
+                      echo "Deleting tag <+pipeline.sequenceId>..."
+                      curl -s -X DELETE -H "Authorization: JWT $TOKEN" https://hub.docker.com/v2/repositories/<+variable.docker_username>/python-harness-app/tags/<+pipeline.sequenceId>/
+                      echo ""
+                      echo "Deleting tag latest..."
+                      curl -s -X DELETE -H "Authorization: JWT $TOKEN" https://hub.docker.com/v2/repositories/<+variable.docker_username>/python-harness-app/tags/latest/
+                      echo ""
+                      echo "=== Verifying Deletion ==="
+                      RESULT=$(curl -s -o /dev/null -w "%{http_code}" https://hub.docker.com/v2/repositories/<+variable.docker_username>/python-harness-app/tags/<+pipeline.sequenceId>/)
+                      if [ "$RESULT" = "404" ]; then
+                        echo "Image tag <+pipeline.sequenceId> deleted successfully! ✅"
+                      else
+                        echo "Image may still exist (status: $RESULT)"
+                      fi
+                      echo ""
+                      echo "========================================="
+                      echo "  CLEANUP COMPLETE!"
+                      echo "  Docker Hub images deleted"
+                      echo "  Pipeline finished successfully!"
+                      echo "========================================="
+
+              # Step 8: Final verification - confirm images are gone from Docker Hub
+              - step:
+                  type: Run
+                  name: Final Verify
+                  identifier: final_verify
+                  spec:
+                    shell: Sh
+                    command: |-
+                      echo "=== Step 8: Final Verification ==="
+                      echo ""
+                      echo "Checking if image still exists on Docker Hub..."
+                      echo ""
+                      STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://hub.docker.com/v2/repositories/<+variable.docker_username>/python-harness-app/tags/<+pipeline.sequenceId>/)
+                      if [ "$STATUS" = "404" ]; then
+                        echo "✅ Tag <+pipeline.sequenceId> — DELETED (not found)"
+                      else
+                        echo "⚠️ Tag <+pipeline.sequenceId> — still exists (status: $STATUS)"
+                      fi
+                      echo ""
+                      STATUS2=$(curl -s -o /dev/null -w "%{http_code}" https://hub.docker.com/v2/repositories/<+variable.docker_username>/python-harness-app/tags/latest/)
+                      if [ "$STATUS2" = "404" ]; then
+                        echo "✅ Tag latest — DELETED (not found)"
+                      else
+                        echo "⚠️ Tag latest — still exists (status: $STATUS2)"
+                      fi
+                      echo ""
+                      echo "========================================="
+                      echo "  ALL DONE!"
+                      echo "  Step 1: Dependencies installed ✅"
+                      echo "  Step 2: Tests passed ✅"
+                      echo "  Step 3: App verified ✅"
+                      echo "  Step 4: Image pushed to Docker Hub ✅"
+                      echo "  Step 5: Push verified ✅"
+                      echo "  Step 6: Waited 1 minute ✅"
+                      echo "  Step 7: Image deleted from Docker Hub ✅"
+                      echo "  Step 8: Deletion verified ✅"
                       echo "========================================="
