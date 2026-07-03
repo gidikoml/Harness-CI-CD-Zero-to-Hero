@@ -1,9 +1,6 @@
 # ============================================
 # PIPELINE: Python App - Harness Cloud + Push to Docker Hub
 # ============================================
-# NO Delegate needed! NO Docker Desktop needed!
-# Harness Cloud does everything.
-#
 # CHANGE THESE 4 VALUES:
 #   1. projectIdentifier → Your project ID (from URL)
 #   2. orgIdentifier → Your org name (usually "default")
@@ -19,17 +16,25 @@
 pipeline:
   name: python-docker-pipeline
   identifier: python_docker_pipeline
+  ##################################################
   # CHANGE THIS: Your project ID
+  ###################################################
   projectIdentifier: HarnessCICDZerotoHero
+  ####################################################
   # CHANGE THIS: Your org name
+  ###################################################
   orgIdentifier: default
   tags: {}
   properties:
     ci:
       codebase:
+        ##############################################
         # CHANGE THIS: Your GitHub connector
+        ############################################
         connectorRef: account.Github
+        ###############################################
         # CHANGE THIS: Your repo name
+        ###############################################
         repoName: Harness-CI-CD-Zero-to-Hero
         build: <+input>
   stages:
@@ -95,7 +100,9 @@ pipeline:
                   name: Build and Push to Docker Hub
                   identifier: build_push_docker
                   spec:
+                    ###############################################
                     # CHANGE THIS: Your Docker Hub connector name
+                    ##############################################
                     connectorRef: dockerhub
                     repo: <+variable.docker_username>/python-harness-app
                     tags:
