@@ -334,7 +334,7 @@ Connectors = How Harness connects to external tools
 1. Click on your new `learning` organization
 2. Click **+ New Project**
 3. Fill in:
-   - Name: `harness-course`
+   - Name: `HarnessCICDZerotoHero`
    - Organization: `learning`
    - Description: `Harness CI/CD course project`
    - Color: Pick any color you like
