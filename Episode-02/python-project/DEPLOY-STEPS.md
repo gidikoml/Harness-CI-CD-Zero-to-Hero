@@ -23,15 +23,49 @@ python-project/
 
 ---
 
-## Step 1: Install Harness Docker Delegate
+## Step 1: Install Harness Docker Delegate on Your Laptop
+
+**Prerequisites:** Docker Desktop must be installed and running on your laptop.
+
+**Download Docker Desktop (if not installed):**
+- Go to: https://www.docker.com/products/docker-desktop
+- Download for Windows
+- Install and restart laptop
+- Open Docker Desktop → make sure it shows "Docker is running" (green)
+
+**Now install the Delegate:**
 
 1. Go to Harness → Project Settings → Delegates
-2. Click + New Delegate
-3. Choose Docker
-4. Copy the docker-compose command Harness gives you
-5. Run it in your terminal
-6. Wait 2 minutes
-7. Delegate shows "Connected" in Harness UI
+2. Click **+ New Delegate**
+3. Choose **Docker**
+4. Fill in:
+   - Delegate Name: `local-docker-delegate`
+   - Delegate Size: Small
+5. Harness gives you a `docker-compose.yml` file. Download it.
+6. Open terminal (Command Prompt or PowerShell) on your laptop
+7. Go to the folder where you downloaded the file:
+   ```
+   cd Downloads
+   ```
+8. Run:
+   ```
+   docker compose -f docker-compose.yml up -d
+   ```
+9. Wait 2-3 minutes
+10. Go back to Harness UI → Delegates page
+11. You should see: `local-docker-delegate` → Status: **Connected** ✅
+
+**Verify it's running:**
+```
+docker ps
+```
+You should see a container named `harness-ng-delegate` running.
+
+**If it fails:**
+- Make sure Docker Desktop is running (check system tray icon)
+- Make sure you have internet connection
+- Try: `docker compose -f docker-compose.yml down` then `up -d` again
+- Check logs: `docker logs harness-ng-delegate`
 
 ---
 

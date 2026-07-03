@@ -342,11 +342,26 @@ Connectors = How Harness connects to external tools
 
 ### Step 3: Add a Secret
 
+**First, create a Docker Hub Access Token:**
+
+1. Open browser → Go to https://app.docker.com/settings/personal-access-tokens
+   (OR: Docker Hub → Click avatar top-right → Account Settings → Personal access tokens)
+2. Click **Generate new token**
+3. Fill in:
+   - Token Description: `harness-access`
+   - Access permissions: **Read & Write**
+4. Click **Generate**
+5. COPY THE TOKEN NOW (you cannot see it again!)
+   - Token looks like: `dckr_pat_xxxxxxxxxxxxxxxxxxx`
+   - Save it somewhere safe temporarily
+
+**Now add it as a Secret in Harness:**
+
 1. Go to Project → **Project Settings** → **Secrets**
 2. Click **+ New Secret** → **Text**
 3. Fill in:
    - Name: `docker-hub-password`
-   - Value: (your Docker Hub password or token)
+   - Value: paste your Docker Hub token (`dckr_pat_xxx...`)
 4. Click **Save**
 
 ### Step 4: Add a Variable
