@@ -26,10 +26,25 @@ pipeline:
                     command: echo hello world
                   timeout: ""
                   type: Run
+              - step:
+                  type: Run
+                  name: Run_2
+                  identifier: Run_2
+                  spec:
+                    shell: Sh
+                    command: |-
+                      echo "=== Building Hello World ==="
+                      cd Episode-01/hello-world-app
+                      mvn clean package -q
+                      echo ""
+                      echo "=== Running the App ==="
+                      java -jar target/hello-world-1.0.0.jar
+                      echo ""
+                      echo "=== Pipeline Success! ==="
           platform:
-            arch: Amd64
             os: Linux
+            arch: Amd64
           runtime:
-            spec: {}
             type: Cloud
+            spec: {}
         type: CI
